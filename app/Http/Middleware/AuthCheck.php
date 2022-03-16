@@ -15,12 +15,12 @@ class AuthCheck
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     /**
-     * Не позволяет не зарегистрированному пользователю заходить на страницу '/dashboard'
+     * Не позволяет не аутентифицированному пользователю заходить на страницу '/dashboard'
      */
     public function handle(Request $request, Closure $next)
     {
         if (!Session()->has('loginId')) {
-            return redirect()->route('login')->with('error', 'Вам нужно сначала зарегистрироваться');
+            return redirect()->route('login')->with('error', 'Войдите в свой аккаунт.');
         }
         return $next($request);
     }

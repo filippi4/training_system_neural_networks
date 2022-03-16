@@ -23,12 +23,12 @@ class CustomAuthController extends Controller
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 $request->session()->put('loginId', $user->id);
-                return redirect('dashboard')->with('success', 'Вы успешно вошли');
+                return redirect('dashboard')->with('success', 'Вы успешно вошли в аккаунт.');
             } else {
-                return back()->with('error', 'Неверный пароль');
+                return back()->with('error', 'Неверный пароль.');
             }
         } else {
-            return back()->with('error', 'Email адрес не зарегистрирован');
+            return back()->with('error', 'Email адрес не зарегистрирован.');
         }
 
     }
@@ -58,9 +58,9 @@ class CustomAuthController extends Controller
         ]);
         if ($user) {
             $request->session()->put('loginId', $user->id);
-            return redirect('dashboard')->with('success', 'Вы успешно зарегистрировались');
+            return redirect('dashboard')->with('success', 'Вы успешно зарегистрировались.');
         } else {
-            return back()->with('error', 'Ошибка регистрации');
+            return back()->with('error', 'Ошибка регистрации.');
         }
     }
 
@@ -68,7 +68,13 @@ class CustomAuthController extends Controller
         $data = [];
         if (Session::has('loginId')) {
             $data = User::where('id', '=', Session::get('loginId'))->first();
-            return view('auth.dashboard', compact('data'));
+            // В зависимости от права открывает административную панель или панель обычного пользователя
+            if ($data->is_admin == 1) {
+                return view('auth.admin.dashboard', compact('data'));                
+            }
+            else {
+                return view('auth.dashboard', compact('data'));                
+            }
         }
     }
 }

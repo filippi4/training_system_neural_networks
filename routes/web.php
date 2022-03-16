@@ -39,9 +39,9 @@ Route::post('/login-user',
     [ CustomAuthController::class, 'loginUser']
 )->name('login-user');
 
-Route::get('/logout-user', 
+Route::get('/logout', 
     [ CustomAuthController::class, 'logout']
-)->name('logout-user');
+)->name('logout')->middleware('isLoggedIn');;
 
 Route::get('/registration', 
     [ CustomAuthController::class, 'registration']
@@ -55,10 +55,10 @@ Route::get('/dashboard',
     [ CustomAuthController::class, 'dashboard']
 )->name('dashboard')->middleware('isLoggedIn');
 
-Route::get('/admin', function () {
-    return view('admin');
-})->name('admin');
+Route::get('/admin/dashboard', function () {
+    return view('admin-dashboard');
+})->name('admin-dashboard')->middleware('is_admin');
 
 Route::post('/admin/add-lesson',
     [ LessonController::class, 'addLesson']
-)->name('add-lesson-form');
+)->name('add-lesson-form')->middleware('is_admin');

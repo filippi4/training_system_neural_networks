@@ -8,8 +8,12 @@
         <li class="nav-item"><a href="{{ route('about')}}" class="nav-link link-dark px-2">О сайте</a></li>
       </ul>
       <ul class="nav">
+        @if (!Session::has('loginId'))
         <li class="nav-item"><a href="{{ route('login') }}" class="nav-link link-dark px-2">Вход</a></li>
         <li class="nav-item"><a href="{{ route('registration') }}" class="nav-link link-dark px-2">Регистрация</a></li>
+        @else
+        <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link link-dark px-2">Выйти</a></li>
+        @endif
       </ul>
     </div>
   </nav>

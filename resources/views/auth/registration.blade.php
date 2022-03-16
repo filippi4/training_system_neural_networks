@@ -7,12 +7,6 @@
     <div class="col-md-4 col-md-offset-4">
         <h4>Регистрация</h4>
         <hr>
-        @if (Session::has('success'))
-        <div class="alert alert-success">{{ Session::get('success') }}</div>
-        @endif
-        @if (Session::has('error'))
-        <div class="alert alert-danger">{{ Session::get('error') }}</div>
-        @endif
         <form action="{{ route('register-user') }}" method="POST">
             @csrf
             <div class="form-group">

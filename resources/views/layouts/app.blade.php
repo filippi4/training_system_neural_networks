@@ -15,6 +15,7 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-8">
+                @include('inc.messages')
                 @yield('content')
             </div>
             <div class="col-4">
