@@ -8,8 +8,8 @@
         <li class="nav-item"><a href="{{ route('about')}}" class="nav-link link-dark px-2">О сайте</a></li>
       </ul>
       <ul class="nav">
-        <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Вход</a></li>
-        <li class="nav-item"><a href="#" class="nav-link link-dark px-2">Регистрация</a></li>
+        <li class="nav-item"><a href="{{ route('login') }}" class="nav-link link-dark px-2">Вход</a></li>
+        <li class="nav-item"><a href="{{ route('registration') }}" class="nav-link link-dark px-2">Регистрация</a></li>
       </ul>
     </div>
   </nav>
