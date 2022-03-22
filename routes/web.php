@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\CustomAuthController;
+use App\Http\Controllers\QuestionController;
 use App\Models\Lesson;
 
 Route::get('/', function () {
@@ -13,6 +14,10 @@ Route::get('/', function () {
 Route::get('/testing', function () {
     return view('testing');
 })->name('testing');
+
+Route::get('/testing/test', 
+    [ QuestionController::class, 'showAllQuestions']
+)->name('test');
 
 Route::get('/glossary', function () {
     return view('glossary');
