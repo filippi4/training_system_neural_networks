@@ -23,7 +23,18 @@ class CustomAuthController extends Controller
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 $request->session()->put('loginId', $user->id);
-                return redirect('dashboard')->with('success', 'Вы успешно вошли в аккаунт.');
+                // ** 
+                // костыль
+                // не работает yield('user-name') в файле nav.blade.php, 
+                // с секцией section('user-name') в dashboard.blade.php
+                $request->session()->put('userName', $user->name);
+                // **
+                if ($user->is_admin == 1) {
+                    return redirect('dashboard')->with('success', 'Вы успешно вошли в аккаунт администратора.');
+                }
+                else {
+                    return redirect('dashboard')->with('success', 'Вы успешно вошли в аккаунт.');
+                }
             } else {
                 return back()->with('error', 'Неверный пароль.');
             }
