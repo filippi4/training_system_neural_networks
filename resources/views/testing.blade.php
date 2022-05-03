@@ -6,5 +6,5 @@
 @section('content')
     <h3>Тест для проверки полученных знаний</h3>
     <br>
-    <a href="{{ route('test') }}"><button class="btn btn-success"><h1>Начать тестирование</h1></button></a>
+    <a  class="btn btn-success" href="{{ route('test') }}">Начать тестирование</a>
 @endsection

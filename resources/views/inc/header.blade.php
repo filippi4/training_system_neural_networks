@@ -4,8 +4,8 @@
         <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
         <span class="fs-4">Обучение теории нейронных сетей</span>
       </a>
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0">
+      <!-- <form class="col-12 col-lg-auto mb-3 mb-lg-0">
         <input type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
-      </form>
+      </form> -->
     </div>
   </header>
