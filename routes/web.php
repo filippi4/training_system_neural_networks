@@ -19,6 +19,10 @@ Route::get('/testing/test',
     [ TestController::class, 'showTest']
 )->name('test');
 
+Route::post('/testing/test/check',
+    [TestController::class, 'checkTest']
+)->name('check-test-form');
+
 Route::get('/glossary', function () {
     return view('glossary');
 })->name('glossary');

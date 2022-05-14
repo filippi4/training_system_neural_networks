@@ -13,10 +13,25 @@ class TestController extends Controller
         foreach ($test as $question) {
             $data[$question->id] = [ 
                 'title' => $question->title,
-                'answers' => explode(";", $question->answers)
+                'answers' => explode(";", str_replace('@', '', $question->answers))
             ];
         }
         return view('tests.test', compact('data'));
+    }
+
+    public function checkTest(Request $req) {
+        $count = Test::count();
+        $result = [];
+        for ($i = 1; $i <= $count; $i++) {
+            if ($req->input("question-$i") == null) {
+                return redirect()->back()->with('error', "Ответьте на все вопросы.");
+            }
+            $current = Test::find($i);
+            $answers = explode(";", $current->answers);
+            $result["question-$i"] = gettype(strpos($answers[$req->input("question-$i")], "@")) === "integer" ? true : false;
+        }
+        $data = $result;
+        return view('tests.result-test', compact('data'));
     }
 
     public function editTest() {
