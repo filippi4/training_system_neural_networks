@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\GlossaryController;
 use App\Models\Lesson;
 
 Route::get('/', function () {
@@ -26,6 +27,10 @@ Route::post('/testing/test/check',
 Route::get('/glossary', function () {
     return view('glossary');
 })->name('glossary');
+
+Route::get('/glossary/{word}', 
+    [ GlossaryController::class, 'showDefinition']
+)->name('definition-glossary');
 
 Route::get('/about', function () {
     return view('about');
