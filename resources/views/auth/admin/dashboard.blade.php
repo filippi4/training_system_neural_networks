@@ -20,6 +20,7 @@
                     <td>{{ $data->name }}</td>
                     <td>{{ $data->email }}</td>
                     <td><a href="{{ route('admin-dashboard') }}">Панель управления</a></td>
+                    <td><a href="{{ route('edit-test') }}">Редактировать тест</a></td>
                 </tr>
             </tbody>
         </table>

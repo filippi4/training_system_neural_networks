@@ -4,7 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\CustomAuthController;
-use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\TestController;
 use App\Models\Lesson;
 
 Route::get('/', function () {
@@ -16,7 +16,7 @@ Route::get('/testing', function () {
 })->name('testing');
 
 Route::get('/testing/test', 
-    [ QuestionController::class, 'showAllQuestions']
+    [ TestController::class, 'showTest']
 )->name('test');
 
 Route::get('/glossary', function () {
@@ -67,3 +67,11 @@ Route::get('/admin/dashboard', function () {
 Route::post('/admin/add-lesson',
     [ LessonController::class, 'addLesson']
 )->name('add-lesson-form')->middleware('is_admin');
+
+Route::get('/admin/edit-test',
+    [ TestController::class, 'editTest']
+)->name('edit-test')->middleware('is_admin');
+
+Route::post('/admin/change-test-form',
+    [ TestController::class, 'changeTest']
+)->name('change-test-form')->middleware('is_admin');
