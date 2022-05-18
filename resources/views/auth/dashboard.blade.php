@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{ $data->name }}</td>
                     <td>{{ $data->email }}</td>
-                    <td><a href="{{ route('dashboard') }}">Панель управления</a></td>
+                    <td><a href="{{ route('user-test-results') }}">Результаты тестирования</a></td>
                 </tr>
             </tbody>
         </table>

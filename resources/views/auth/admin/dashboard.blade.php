@@ -21,6 +21,7 @@
                     <td>{{ $data->email }}</td>
                     <td><a href="{{ route('admin-dashboard') }}">Панель управления</a></td>
                     <td><a href="{{ route('edit-test') }}">Редактировать тест</a></td>
+                    <td><a href="{{ route('user-test-results') }}">Результаты тестирования</a></td>
                 </tr>
             </tbody>
         </table>

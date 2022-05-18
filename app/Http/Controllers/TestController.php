@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Test;
+use App\Models\TestResults;
+use App\Models\User;
+use Session;
 
 class TestController extends Controller
 {
@@ -30,8 +33,64 @@ class TestController extends Controller
             $answers = explode(";", $current->answers);
             $result["question-$i"] = gettype(strpos($answers[$req->input("question-$i")], "@")) === "integer" ? true : false;
         }
+        if (Session::has('loginId')) {
+            $current_user = User::find(Session::get('loginId'));
+            $test_results = TestResults::where('email', '=', $current_user->email)->first();
+            if ($test_results == null) {
+                $t_results = new TestResults;
+                $t_results->email = $current_user->email;
+                $tmp_result = "";
+                $tmp_result .= date('Y-m-d H:i') . PHP_EOL;
+                foreach ($result as $key => $value) {
+                    $tmp_result .= explode('-', $key)[1] . ':' . (($value) ? '1' : '0') . ' ';
+                }
+                $tmp_result[-1] = ';';
+                $t_results->results = $tmp_result;
+                $t_results->save();
+            } else {
+                $tmp_result = $test_results->results;
+                $tmp_result .= PHP_EOL;
+                $tmp_result .= date('Y-m-d H:i') . PHP_EOL;
+                foreach ($result as $key => $value) {
+                    $tmp_result .= explode('-', $key)[1] . ':' . (($value) ? '1' : '0') . ' ';
+                }
+                $tmp_result[-1] = ';';
+                $test_results->results = $tmp_result;
+                $test_results->save();
+            }
+            
+        }
+
         $data = $result;
-        return view('tests.result-test', compact('data'));
+        return view('tests.test-results', compact('data'));
+    }
+
+    public function showUserTestResults() {
+        $current_user = User::find(Session::get('loginId'));
+        $test_results = TestResults::where('email', '=', $current_user->email)->first();
+        if ($test_results == null) {
+            return view('tests.user-test-results')->with('message', 'Нет результатов тестирования.');
+        }
+        else {
+            $tmp_results = explode(';', $test_results->results);
+            array_pop($tmp_results); // удалить последний эл-т массива, пустая строка из-за стоящего в конце символа ';'
+            $results = [];
+            foreach ($tmp_results as $res) {
+                [$r_date, $r_res] = explode("\n", trim($res)); // trim - удалить '\n' в начале и в конце строки
+                $tmp_res = explode(' ', $r_res);
+                $r_res = [];
+                foreach ($tmp_res as $r) {
+                    $r_res[] = explode(':', $r)[1];
+                }
+                $results[$r_date] = $r_res;
+            }
+            $data['results'] = $results;
+            $max_count = 0;
+            foreach ($results as $date => $res)
+                $max_count = max($max_count, count($res));
+            $data['count'] = $max_count;
+            return view('tests.user-test-results', compact('data'));
+        }
     }
 
     public function editTest() {

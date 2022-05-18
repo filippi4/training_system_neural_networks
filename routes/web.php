@@ -69,6 +69,10 @@ Route::get('/dashboard',
     [ CustomAuthController::class, 'dashboard']
 )->name('dashboard')->middleware('isLoggedIn');
 
+Route::get('/dashboard/test-results', 
+    [ TestController::class, 'showUserTestResults']
+)->name('user-test-results')->middleware('isLoggedIn');
+
 Route::get('/admin/dashboard', function () {
     return view('admin-dashboard');
 })->name('admin-dashboard')->middleware('is_admin');
