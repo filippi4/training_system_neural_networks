@@ -15,24 +15,24 @@ class TestController extends Controller
         $test = Test::all();
         $data = [];
         foreach ($test as $question) {
-            $data[$question->id] = [ 
-                'title' => $question->title,
-                'answers' => explode(";", str_replace('@', '', $question->answers))
-            ];
+            $data[$question->title] = explode(";", str_replace('@', '', $question->answers));
         }
         return view('tests.test', compact('data'));
     }
 
     public function checkTest(Request $req) {
-        $count = Test::count();
+        $test = Test::all();
+        $test_count = $test->count();
+        $input_count = count($req->all()) - 1;
+        if ($test_count != $input_count) {
+            return redirect()->back()->with('error', "Ответьте на все вопросы.");
+        }
         $result = [];
-        for ($i = 1; $i <= $count; $i++) {
-            if ($req->input("question-$i") == null) {
-                return redirect()->back()->with('error', "Ответьте на все вопросы.");
-            }
-            $current = Test::find($i);
-            $answers = explode(";", $current->answers);
-            $result["question-$i"] = gettype(strpos($answers[$req->input("question-$i")], "@")) === "integer" ? true : false;
+        $number = 1;
+        foreach ($test as $question) {
+            $answers = explode(";", $question->answers);
+            $result["$number"] = gettype(strpos($answers[$req->input("question-$number")], "@")) === "integer" ? true : false;
+            $number++;
         }
         if (Session::has('loginId')) {
             $current_user = User::find(Session::get('loginId'));
@@ -43,7 +43,7 @@ class TestController extends Controller
                 $tmp_result = "";
                 $tmp_result .= date('Y-m-d H:i') . PHP_EOL;
                 foreach ($result as $key => $value) {
-                    $tmp_result .= explode('-', $key)[1] . ':' . (($value) ? '1' : '0') . ' ';
+                    $tmp_result .= $key . ':' . (($value) ? '1' : '0') . ' ';
                 }
                 $tmp_result[-1] = ';';
                 $t_results->results = $tmp_result;
@@ -53,7 +53,7 @@ class TestController extends Controller
                 $tmp_result .= PHP_EOL;
                 $tmp_result .= date('Y-m-d H:i') . PHP_EOL;
                 foreach ($result as $key => $value) {
-                    $tmp_result .= explode('-', $key)[1] . ':' . (($value) ? '1' : '0') . ' ';
+                    $tmp_result .= $key . ':' . (($value) ? '1' : '0') . ' ';
                 }
                 $tmp_result[-1] = ';';
                 $test_results->results = $tmp_result;
@@ -61,7 +61,6 @@ class TestController extends Controller
             }
             
         }
-
         $data = $result;
         return view('tests.test-results', compact('data'));
     }

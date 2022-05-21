@@ -10,9 +10,10 @@
             <th>Правильность</th>
         </thead>
         <tbody>
+            @php $number = 1 @endphp
             @foreach($data as $key => $value)
             <tr>
-                <td>{{ explode('-', $key)[1] }}</td>
+                <td>{{ $number++ }}</td>
                 @if ($value == true)
                 <td class="table-success">Да</td>
                 @else
