@@ -31,7 +31,17 @@ class TestController extends Controller
         $number = 1;
         foreach ($test as $question) {
             $answers = explode(";", $question->answers);
-            $result["$number"] = gettype(strpos($answers[$req->input("question-$number")], "@")) === "integer" ? true : false;
+            $true_answer = [];
+            foreach ($answers as $answer) {
+               $true_answer[] = gettype(strpos($answer, "@")) === "integer";
+            }
+            // TODO: переписать
+            $user_answer = array_fill(0, count($answers), false);
+            foreach ($req->input("question-$number") as $answer)
+                for ($i = 1; $i <= count($answers); $i++) {
+                    $user_answer[$i-1] |= $answer == (string)($i-1);
+                }
+            $result["$number"] = $true_answer == $user_answer;
             $number++;
         }
         if (Session::has('loginId')) {

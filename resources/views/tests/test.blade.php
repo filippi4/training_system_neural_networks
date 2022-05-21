@@ -10,8 +10,8 @@
     <p>
     <h3>{{ $number .'. '. $title }}</h3>
         @foreach ($answers as $index => $answer)
-        <label for="answer-{{ $number . '-' . $index }}">{{ $index+1 .') '. $answer }}</label>
-        <input type="radio" name="question-{{ $number }}" id="answer-{{ $number . '-' . $index }}" value="{{ $index }}">
+        <label for="answer-{{ $number . '-' . ($index+1) }}">{{ $index+1 .') '. $answer }}</label>
+        <input type="checkbox" name="question-{{ $number }}[]" id="answer-{{ $number . '-' . ($index+1) }}" value="{{ $index }}">
         <br>
         @endforeach
     </p>
