@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Test;
 use App\Models\TestResults;
 use App\Models\User;
@@ -191,5 +192,17 @@ class TestController extends Controller
             $test->save();
             return redirect()->route('edit-test');
         }
+    }
+    public function editTestRemove() {
+        $test = Test::all();
+        $data = [];
+        foreach ($test as $question) {
+            $data[$question->id] = $question->title;
+        }
+        return view('tests.remove-question', compact('data'));
+    }
+    public function removeQuestion($id, Request $req) {
+        Test::find($id)->delete();
+        return redirect()->route('edit-test');
     }
 }

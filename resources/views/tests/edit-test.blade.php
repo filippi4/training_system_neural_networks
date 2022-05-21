@@ -8,7 +8,7 @@
 @else
 <p>
     <a class="btn btn-primary" href="{{ route('add-edit-test') }}">Добавить</a>
-    <a class="btn btn-primary" href="#">Удалить</a>
+    <a class="btn btn-primary" href="{{ route('remove-edit-test') }}">Удалить</a>
 </p>
 <form action="{{ route('change-test-form') }}" method="post">
     @csrf
