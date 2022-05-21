@@ -140,4 +140,56 @@ class TestController extends Controller
 
         return redirect()->back();
     }
+
+    public function addQuestion(Request $req) {
+        // TODO: переписать с помошью validate
+        $error = "Заполните все поля формы";
+        $correct_input = true;
+        if ($req->input('question-description') == null) {
+            $correct_input = false;
+        }
+        $answers_count = (int)$req->input('answers-count');
+        for ($i = 1; $i <= $answers_count; $i++) {
+            if ($req->input("answer-$i") == null) {
+                $correct_input = false;
+            }
+        }
+        if ($req->input('right-answers-count') == "one") {
+            if ($req->input('radio-right-answer') == null) {
+                $correct_input = false;
+                $error .= " и выберите правильный вариант ответа";
+            }
+        } else if ($req->input('right-answers-count') == "several") {
+            if ($req->input('checkbox-right-answer') == null) {
+                $correct_input = false;
+                $error .= " и выберите правильные варианты ответа";
+            }
+        }
+        if ($correct_input == false) {
+            return redirect()->back()->with('error', $error . '.');
+        } else {
+            $test = new Test;
+            $test->title = $req->input('question-description');
+
+            $answers = "";
+            for ($i = 1; $i <= $answers_count; $i++) {
+                $answers .= $req->input("answer-$i");
+                if ($req->input('right-answers-count') == "one") {
+                    if ((int)$req->input('radio-right-answer') == $i) {
+                        $answers .= '@';
+                    }
+                } 
+                else if ($req->input('right-answers-count') == "several") {
+                    if (in_array((string)$i, $req->input('checkbox-right-answer'))) {
+                        $answers .= '@';
+                    }
+                }
+                $answers .= ';';
+            }
+            $answers = mb_substr($answers, 0, -1);
+            $test->answers = $answers;
+            $test->save();
+            return redirect()->route('edit-test');
+        }
+    }
 }

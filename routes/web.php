@@ -85,6 +85,14 @@ Route::get('/admin/edit-test',
     [ TestController::class, 'editTest']
 )->name('edit-test')->middleware('is_admin');
 
+Route::get('/admin/edit-test/add', function () {
+    return view('tests.add-question');
+})->name('add-edit-test')->middleware('is_admin');
+
+Route::post('/admin/edit-test/add-question',
+    [ TestController::class, 'addQuestion']
+)->name('add-edit-test-form')->middleware('is_admin');
+
 Route::post('/admin/change-test-form',
     [ TestController::class, 'changeTest']
 )->name('change-test-form')->middleware('is_admin');
