@@ -73,13 +73,33 @@ Route::get('/dashboard/test-results',
     [ TestController::class, 'showUserTestResults']
 )->name('user-test-results')->middleware('isLoggedIn');
 
-Route::get('/admin/dashboard', function () {
-    return view('admin-dashboard');
-})->name('admin-dashboard')->middleware('is_admin');
+// Route::get('/admin/dashboard', function () {
+//     return view('admin-dashboard');
+// })->name('admin-dashboard')->middleware('is_admin');
 
-Route::post('/admin/add-lesson',
+Route::get('/admin/edit-lessons',
+    [ LessonController::class, 'editLessons']
+)->name('edit-lessons')->middleware('is_admin');
+
+Route::get('/admin/edit-lesson/add', function () {
+    return view('lessons.add-lesson');
+})->name('add-lesson')->middleware('is_admin');
+
+Route::post('/admin/edit-test/add-lesson',
     [ LessonController::class, 'addLesson']
 )->name('add-lesson-form')->middleware('is_admin');
+
+Route::get('/admin/edit-lessons/change/{id}', 
+    [ LessonController::class, 'changeLesson']
+)->name('change-lesson')->middleware('is_admin');
+
+Route::post('/admin/edit-lessons/change/{id}/save', 
+    [ LessonController::class, 'saveChangeLesson']
+)->name('save-change-lesson-form')->middleware('is_admin');
+
+Route::get('/admin/edit-lessons/remove-lesson/{id}',
+    [ LessonController::class, 'removeLesson']
+)->name('remove-lesson-form')->middleware('is_admin');
 
 Route::get('/admin/edit-test',
     [ TestController::class, 'editTest']

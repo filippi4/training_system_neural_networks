@@ -1,11 +1,8 @@
 @extends('layouts.app')
 
-@section('title-block')Страница администратора@endsection
+@section('title-block')Добавление урока@endsection
 
 @section('content')
-    <h2>Административная панель</h2>
-    <br>
-    <h3>Добавление урока</h3>
     <form action="{{ route('add-lesson-form') }}" method="post">
         @csrf
         <div class="form-group">
@@ -19,12 +16,12 @@
         </div>
 
         <div class="form-group">
-            <label for="syntax-type-html">html</label>
-            <input type="radio" name="syntax-type" id="syntax-type-html" value="html" checked>
-            <label for="syntax-type-markdown">Markdown</label>
-            <input type="radio" name="syntax-type" id="syntax-type-markdown" value="markdown">
+            <label for="content-type-html">html</label>
+            <input type="radio" name="content-type" id="content-type-html" value="html" checked>
+            <label for="content-type-markdown">Markdown</label>
+            <input type="radio" name="content-type" id="content-type-markdown" value="markdown">
         </div>
 
-        <button type="submit" class="btn btn-success">Отправить</button>
+        <button type="submit" class="btn btn-success">Добавить</button>
     </form>
 @endsection
