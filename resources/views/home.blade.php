@@ -6,7 +6,7 @@
 @section('content')
     <ul>
         @foreach($data as $el)
-        <li><a href="{{ route('one-lesson', $el->id) }}">Урок {{ $el->id .'. '. $el->title }}</a></li>
+        <li style="list-style-type: none"><a href="{{ route('one-lesson', $el->id) }}">{{ $el->title }}</a></li>
         @endforeach
     </ul>
 @endsection
