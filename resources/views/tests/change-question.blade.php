@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
-@section('title-block')Редактирование теста@endsection
+@section('title-block')Изменение теста@endsection
 
 @section('content')
-<form action="{{ route('add-edit-test-form') }}" method="post">
+<form action="{{ route('save-change-question-form', $data['id']) }}" method="post">
     @csrf
     <div class="form-group">
         <label for="question-description">Введите текст вопроса</label>
-        <textarea class="form-control" name="question-description" id="question-description" cols="40" rows="1"></textarea>
+        <textarea class="form-control" name="question-description" id="question-description" cols="40" rows="1">{{ $data['title'] }}</textarea>
     </div>
     <div class="form-group">
-    <label for="answers-count">Выберите количество правильных ответов</label>
-    <select class="form-control" name="right-answers-count" id="right-answers-count" onchange="change_true_answers_count(value)">
-            <option selected value="one">один</option>
+        <label for="answers-count">Выберите количество правильных ответов</label>
+        <select class="form-control" name="right-answers-count" id="right-answers-count" onchange="change_right_answers_count(value)">
+            <option value="one">один</option>
             <option value="several">несколько</option>
         </select>
     </div>
@@ -31,20 +31,20 @@
             <table>
                 <tr id="tr-answer-1">
                     <td>1) </td>
-                    <td><input type="text" class="form-control" name="answer-1" id="answer-1" style="width: 400px"></td>
+                    <td><input type="text" class="form-control" name="answer-1" id="answer-1" value="{{ $data['answers'][0] }}" style="width: 400px"></td>
                     <td><input type="radio" name="radio-right-answer" id="radio-answer-1" value="1"></td>
-                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-1" value="1" style="display: none"></td>
+                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-1" value="1"style="display: none"></td>
                 </tr>
                 <tr id="tr-answer-2">
                     <td>2) </td>
-                    <td><input type="text" class="form-control" name="answer-2" id="answer-2" style="width: 400px"></td>
+                    <td><input type="text" class="form-control" name="answer-2" id="answer-2" value="{{ $data['answers'][1] }}" style="width: 400px"></td>
                     <td><input type="radio" name="radio-right-answer" id="radio-answer-2" value="2"></td>
                     <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-2" value="2" style="display: none"></td>
                 </tr>
                 <tr id="tr-answer-3">
                     <td>3) </td>
-                    <td style="margin-left: 20px"><input type="text" class="form-control" name="answer-3" id="answer-3" style="width: 400px"></td>
-                    <td><input type="radio" name="radio-right-answer" id="radio-answer-3" value="3"></td>
+                    <td><input type="text" class="form-control" name="answer-3" id="answer-3" style="width: 400px"></td>
+                    <td><input type="radio" name="radio-right-answer" id="radio-answer-3" value="3" ></td>
                     <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-3" value="3" style="display: none"></td>
                 </tr>
                 <tr id="tr-answer-4">
@@ -69,18 +69,37 @@
         </label>
     </div>
     <br>
-    <button class="btn btn-primary" type="submit">Добавить</button>
+    <button class="btn btn-success" type="submit">Сохранить</button>
 </form>
 <script>
+    var right_answers_count = "<?php echo $data['right-answers-count']; ?>";
+    var answers_count = "<?php echo $data['answers-count']; ?>";
+    <?php 
+    $json_value = json_encode($data['right-answer']);
+    echo "var right_answer = " . $json_value . ";\n";
+    ?>
     // изменение кол-ва вариантов ответов после перезагрузки страницы
     window.addEventListener("load", function(){
-        document.getElementById("right-answers-count").value = "one";
-        document.getElementById("answers-count").value = 4;
-        change_true_answers_count("one");
-        change_answers_count(4);
+        document.getElementById("right-answers-count").value = right_answers_count;
+        document.getElementById("answers-count").value = answers_count;
+        document.getElementById("checkbox-answer-3").checked = false;
+        change_right_answers_count(right_answers_count);
+        change_answers_count(answers_count);
+        set_checked_value();
     }, false);
 
-    function change_true_answers_count(value) {
+    function set_checked_value() {
+        console.log(right_answer);
+        for (let i = 0; i < right_answer.length; i++) {
+            if (right_answer[i] == "true") {
+                document.getElementById("checkbox-answer-" + (i + 1)).checked = true;
+            } else if (right_answer[i] == "false") {
+                document.getElementById("checkbox-answer-" + (i + 1)).checked = false;
+            }
+        }
+    }
+
+    function change_right_answers_count(value) {
         if (value == "one") {
             document.getElementById("radio-answer-1").style.display = "";
             document.getElementById("radio-answer-2").style.display = "";

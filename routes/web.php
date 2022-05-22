@@ -93,11 +93,15 @@ Route::post('/admin/edit-test/add-question',
     [ TestController::class, 'addQuestion']
 )->name('add-edit-test-form')->middleware('is_admin');
 
-Route::get('/admin/edit-test/remove', 
-    [ TestController::class, 'editTestRemove']
-)->name('remove-edit-test')->middleware('is_admin');
+Route::get('/admin/edit-test/change/{id}', 
+    [ TestController::class, 'changeQuestion']
+)->name('change-question')->middleware('is_admin');
 
-Route::post('/admin/edit-test/remove-question{id}',
+Route::post('/admin/edit-test/change/{id}/save', 
+    [ TestController::class, 'saveChangeQuestion']
+)->name('save-change-question-form')->middleware('is_admin');
+
+Route::get('/admin/edit-test/remove-question/{id}',
     [ TestController::class, 'removeQuestion']
 )->name('remove-edit-test-form')->middleware('is_admin');
 

@@ -31,9 +31,9 @@ class TestController extends Controller
         $number = 1;
         foreach ($test as $question) {
             $answers = explode(";", $question->answers);
-            $true_answer = [];
+            $right_answer = [];
             foreach ($answers as $answer) {
-               $true_answer[] = gettype(strpos($answer, "@")) === "integer";
+               $right_answer[] = gettype(strpos($answer, "@")) === "integer";
             }
             // TODO: переписать
             $user_answer = array_fill(0, count($answers), false);
@@ -41,7 +41,7 @@ class TestController extends Controller
                 for ($i = 1; $i <= count($answers); $i++) {
                     $user_answer[$i-1] |= $answer == (string)($i-1);
                 }
-            $result["$number"] = $true_answer == $user_answer;
+            $result["$number"] = $right_answer == $user_answer;
             $number++;
         }
         if (Session::has('loginId')) {
@@ -120,36 +120,36 @@ class TestController extends Controller
         }
     }
 
-    public function changeTest(Request $req) {
-        $input = $req->all();
-        $tmp_test = [];
-        $title = "";
-        $answers = "";
-        foreach ($input as $key => $value) {
-            /**
-             * BAD: Сильная зависимость от структуры данных
-             */
-            if (preg_match("/question/i", $key)) {
-                $answers = "";
-                $title = $value;
-            }
-            if (preg_match("/answer/i", $key)) {
-                $answers .= $value . ';';
-                $tmp_test[$title] = $answers;
-            }
-        }
+    // public function changeTest(Request $req) {
+    //     $input = $req->all();
+    //     $tmp_test = [];
+    //     $title = "";
+    //     $answers = "";
+    //     foreach ($input as $key => $value) {
+    //         /**
+    //          * BAD: Сильная зависимость от структуры данных
+    //          */
+    //         if (preg_match("/question/i", $key)) {
+    //             $answers = "";
+    //             $title = $value;
+    //         }
+    //         if (preg_match("/answer/i", $key)) {
+    //             $answers .= $value . ';';
+    //             $tmp_test[$title] = $answers;
+    //         }
+    //     }
 
-        $test_count = Test::count();
-        $tmp_test_keys = array_keys($tmp_test);
-        for ($i = 1; $i <= $test_count; $i++) {
-            $current = Test::find($i); // BAD: id мб не последовательным
-            $current->title = $tmp_test_keys[$i-1];
-            $current->answers = mb_substr($tmp_test[$tmp_test_keys[$i-1]], 0, -1);
-            $current->save();
-        }
+    //     $test_count = Test::count();
+    //     $tmp_test_keys = array_keys($tmp_test);
+    //     for ($i = 1; $i <= $test_count; $i++) {
+    //         $current = Test::find($i); // BAD: id мб не последовательным
+    //         $current->title = $tmp_test_keys[$i-1];
+    //         $current->answers = mb_substr($tmp_test[$tmp_test_keys[$i-1]], 0, -1);
+    //         $current->save();
+    //     }
 
-        return redirect()->back();
-    }
+    //     return redirect()->back();
+    // }
 
     public function addQuestion(Request $req) {
         // TODO: переписать с помошью validate
@@ -202,6 +202,7 @@ class TestController extends Controller
             return redirect()->route('edit-test');
         }
     }
+
     public function editTestRemove() {
         $test = Test::all();
         $data = [];
@@ -210,6 +211,78 @@ class TestController extends Controller
         }
         return view('tests.remove-question', compact('data'));
     }
+
+    public function changeQuestion($id, Request $req) {
+        $question = Test::find($id);
+        $right_answer = [];
+        foreach (explode(";", $question->answers) as $answer) {
+            $right_answer[] = gettype(strpos($answer, "@")) === "integer" ? "true" : "false";
+        }
+        $data = [
+            'id' => $question->id,
+            'title' => $question->title,
+            'answers' => explode(';', str_replace('@', '', $question->answers)),
+            'answers-count' => "" . count(explode(";", $question->answers)),
+            'right-answer' => $right_answer,
+            'right-answers-count' => "" . (count($right_answer) > 1 ? 'several' : 'one')
+        ];
+        // dd("string", $right_answer);
+        // dd($data);
+        return view('tests.change-question', compact('data'));
+    }
+
+    public function saveChangeQuestion($id, Request $req) {
+        // TODO: переписать с помошью validate
+        $error = "Заполните все поля формы";
+        $correct_input = true;
+        if ($req->input('question-description') == null) {
+            $correct_input = false;
+        }
+        $answers_count = (int)$req->input('answers-count');
+        for ($i = 1; $i <= $answers_count; $i++) {
+            if ($req->input("answer-$i") == null) {
+                $correct_input = false;
+            }
+        }
+        if ($req->input('right-answers-count') == "one") {
+            if ($req->input('radio-right-answer') == null) {
+                $correct_input = false;
+                $error .= " и выберите правильный вариант ответа";
+            }
+        } else if ($req->input('right-answers-count') == "several") {
+            if ($req->input('checkbox-right-answer') == null) {
+                $correct_input = false;
+                $error .= " и выберите правильные варианты ответа";
+            }
+        }
+        if ($correct_input == false) {
+            return redirect()->back()->with('error', $error . '.');
+        } else {
+            $test = Test::find($id);
+            $test->title = $req->input('question-description');
+
+            $answers = "";
+            for ($i = 1; $i <= $answers_count; $i++) {
+                $answers .= $req->input("answer-$i");
+                if ($req->input('right-answers-count') == "one") {
+                    if ((int)$req->input('radio-right-answer') == $i) {
+                        $answers .= '@';
+                    }
+                } 
+                else if ($req->input('right-answers-count') == "several") {
+                    if (in_array((string)$i, $req->input('checkbox-right-answer'))) {
+                        $answers .= '@';
+                    }
+                }
+                $answers .= ';';
+            }
+            $answers = mb_substr($answers, 0, -1);
+            $test->answers = $answers;
+            $test->save();
+            return redirect()->route('edit-test');
+        }
+    }
+
     public function removeQuestion($id, Request $req) {
         Test::find($id)->delete();
         return redirect()->route('edit-test');
