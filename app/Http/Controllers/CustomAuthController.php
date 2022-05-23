@@ -45,8 +45,12 @@ class CustomAuthController extends Controller
     }
 
     public function logout() {
+        /**
+         * BUG: если после выхода пользователя, регистрируется новый пользователь, 
+         * то на панели навигации отображается имя вышедшего пользователя
+         */
         if (Session::has('loginId')) {
-            Session::pull('loginId');
+            Session::forget('loginId');
             return redirect()->route('login');
         }
     }

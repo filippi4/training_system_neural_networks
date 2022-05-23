@@ -226,7 +226,6 @@ class TestController extends Controller
             'right-answer' => $right_answer,
             'right-answers-count' => "" . (count($right_answer) > 1 ? 'several' : 'one')
         ];
-        // dd("string", $right_answer);
         // dd($data);
         return view('tests.change-question', compact('data'));
     }

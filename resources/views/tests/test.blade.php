@@ -9,11 +9,13 @@
     @foreach ($data as $title => $answers)
     <p>
     <h3>{{ $number .'. '. $title }}</h3>
+        <div class="form-check">
         @foreach ($answers as $index => $answer)
-        <label for="answer-{{ $number . '-' . ($index+1) }}">{{ $index+1 .') '. $answer }}</label>
-        <input type="checkbox" name="question-{{ $number }}[]" id="answer-{{ $number . '-' . ($index+1) }}" value="{{ $index }}">
+        <label class="form-check-label" for="answer-{{ $number . '-' . ($index+1) }}">{{ $index+1 .') '. $answer }}</label>
+        <input class="form-check-input" type="checkbox" name="question-{{ $number }}[]" id="answer-{{ $number . '-' . ($index+1) }}" value="{{ $index }}">
         <br>
         @endforeach
+        </div>
     </p>
     @php $number++ @endphp
     @endforeach

@@ -43,25 +43,25 @@
                 </tr>
                 <tr id="tr-answer-3">
                     <td>3) </td>
-                    <td><input type="text" class="form-control" name="answer-3" id="answer-3" style="width: 400px"></td>
+                    <td><input type="text" class="form-control" name="answer-3" id="answer-3" value="{{ $data['answers'][2] ?? ''}}" style="width: 400px"></td>
                     <td><input type="radio" name="radio-right-answer" id="radio-answer-3" value="3" ></td>
                     <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-3" value="3" style="display: none"></td>
                 </tr>
                 <tr id="tr-answer-4">
                     <td>4) </td>
-                    <td><input type="text" class="form-control" name="answer-4" id="answer-4" style="width: 400px"></td>
+                    <td><input type="text" class="form-control" name="answer-4" id="answer-4" value="{{ $data['answers'][3] ?? ''}}" style="width: 400px"></td>
                     <td><input type="radio" name="radio-right-answer" id="radio-answer-4" value="4"></td>
                     <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-4" value="4" style="display: none"></td>
                 </tr>
                 <tr id="tr-answer-5" style="display: none">
                     <td>5) </td>
-                    <td><input type="text" class="form-control" name="answer-5" id="answer-5" style="width: 400px"></td>
+                    <td><input type="text" class="form-control" name="answer-5" id="answer-5" value="{{ $data['answers'][4] ?? ''}}" style="width: 400px"></td>
                     <td><input type="radio" name="radio-right-answer" id="radio-answer-5" value="5"></td>
                     <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-5" value="5" style="display: none"></td>
                 </tr>
                 <tr id="tr-answer-6" style="display: none">
                     <td>6) </td>
-                    <td><input type="text" class="form-control" name="answer-6" id="answer-6" style="width: 400px"></td>
+                    <td><input type="text" class="form-control" name="answer-6" id="answer-6" value="{{ $data['answers'][5] ?? ''}}" style="width: 400px"></td>
                     <td><input type="radio" name="radio-right-answer" id="radio-answer-6" value="6"></td>
                     <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-6" value="6" style="display: none"></td>
                 </tr>
