@@ -16,11 +16,16 @@ Route::get('/testing', function () {
     return view('testing');
 })->name('testing');
 
-Route::get('/testing/test', 
+Route::get('/testing/test/{question_type}', 
     [ TestController::class, 'showTest']
 )->name('test');
 
-Route::post('/testing/test/check',
+/**
+ * BAD: question_type передается от страницы к странице
+ * TODO: переписать с отдельной таблицей вопросов
+ * с типом вопроса, тест ссылается на вопрос по id 
+ */ 
+Route::post('/testing/test/check/{question_type}',
     [TestController::class, 'checkTest']
 )->name('check-test-form');
 

@@ -18,9 +18,9 @@ class CreateTestResultsTable extends Migration
             $table->string('email');
             /**
              * Хранение результатов в бд
-             * 2022-05-10 14:00 
+             * 2022-05-10 14:00 teor
              * 1:1 2:1 3:1 4:1 5:0;
-             * 2022-05-10 15:00
+             * 2022-05-10 15:00 math
              * 1:1 2:0 3:0 4:0 5:0;
              */
             $table->text('results'); 

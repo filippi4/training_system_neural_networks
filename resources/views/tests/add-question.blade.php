@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title-block')Редактирование теста@endsection
+@section('title-block')Добавление вопроса@endsection
 
 @section('content')
 <form action="{{ route('add-edit-test-form') }}" method="post">
@@ -8,6 +8,13 @@
     <div class="form-group">
         <label for="question-description">Введите текст вопроса</label>
         <textarea class="form-control" name="question-description" id="question-description" cols="40" rows="1"></textarea>
+    </div>
+    <div class="form-group">
+    <label for="question-type">Выберите тип вопроса</label>
+    <select class="form-control" name="question-type" id="question-type">
+            <option selected value="theor">Теоретический</option>
+            <option value="math">Математический</option>
+        </select>
     </div>
     <div class="form-group">
     <label for="answers-count">Выберите количество правильных ответов</label>

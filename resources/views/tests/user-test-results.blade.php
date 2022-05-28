@@ -11,19 +11,28 @@
     <table class="table table-bordered">
         <thead>
             <th>Время тестирования</th>
+            <th>Тип теста</th>
             <th colspan="10">Результаты</th>
         </thead>
         <thead>
+            <th></th>
             <th></th>
             @for ($i = 1; $i <= $data['count']; $i++)
             <th>{{ $i }}</th>
             @endfor
         </thead>
         <tbody>
-            @foreach ($data['results'] as $date => $result)
+            @foreach ($data['tests_results'] as $date => $value)
             <tr>
                 <td>{{ $date }}</td>
-                @foreach ($result as $r)
+                <td style="font-size: 0.8em">
+                @if ($value['type'] == "theor")
+                    Теоретический
+                @elseif ($value['type'] == "math")
+                    Математический
+                @endif
+                </td>
+                @foreach ($value['result'] as $r)
                 @if ($r == "1")
                 <td class="table-success">
                 @elseif ($r == "0")

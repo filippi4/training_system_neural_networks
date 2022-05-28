@@ -3,7 +3,7 @@
 @section('title-block')Тест@endsection
 
 @section('content')
-<form action="{{ route('check-test-form') }}" method="post">
+<form action="{{ route('check-test-form', $question_type) }}" method="post">
     @csrf
     @php $number = 1 @endphp
     @foreach ($data as $title => $answers)

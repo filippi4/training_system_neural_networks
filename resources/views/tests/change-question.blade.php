@@ -10,6 +10,13 @@
         <textarea class="form-control" name="question-description" id="question-description" cols="40" rows="1">{{ $data['title'] }}</textarea>
     </div>
     <div class="form-group">
+    <label for="question-type">Выберите тип вопроса</label>
+    <select class="form-control" name="question-type" id="question-type">
+            <option selected value="theor">Теоретический</option>
+            <option value="math">Математический</option>
+        </select>
+    </div>
+    <div class="form-group">
         <label for="answers-count">Выберите количество правильных ответов</label>
         <select class="form-control" name="right-answers-count" id="right-answers-count" onchange="change_right_answers_count(value)">
             <option value="one">один</option>
@@ -72,6 +79,7 @@
     <button class="btn btn-success" type="submit">Сохранить</button>
 </form>
 <script>
+    var question_type = "<?php echo $data['question-type']; ?>";
     var right_answers_count = "<?php echo $data['right-answers-count']; ?>";
     var answers_count = "<?php echo $data['answers-count']; ?>";
     <?php 
@@ -80,6 +88,7 @@
     ?>
     // изменение кол-ва вариантов ответов после перезагрузки страницы
     window.addEventListener("load", function(){
+        document.getElementById("question-type").value = question_type;
         document.getElementById("right-answers-count").value = right_answers_count;
         document.getElementById("answers-count").value = answers_count;
         document.getElementById("checkbox-answer-3").checked = false;
@@ -89,12 +98,17 @@
     }, false);
 
     function set_checked_value() {
-        console.log(right_answer);
         for (let i = 0; i < right_answer.length; i++) {
-            if (right_answer[i] == "true") {
-                document.getElementById("checkbox-answer-" + (i + 1)).checked = true;
-            } else if (right_answer[i] == "false") {
-                document.getElementById("checkbox-answer-" + (i + 1)).checked = false;
+            if (right_answers_count == "one") {
+                if (right_answer[i] == "true") {
+                    document.getElementById("radio-answer-" + (i + 1)).checked = true;
+                }
+            } else if (right_answers_count == "several") {
+                if (right_answer[i] == "true") {
+                    document.getElementById("checkbox-answer-" + (i + 1)).checked = true;
+                } else if (right_answer[i] == "false") {
+                    document.getElementById("checkbox-answer-" + (i + 1)).checked = false;
+                }
             }
         }
     }

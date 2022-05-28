@@ -23,4 +23,7 @@
             @endforeach
         </tbody>
     </table>
+    @if (Session::has('loginId'))
+    <p><a style="font-size: 0.8em" href="{{ route('user-test-results') }}">Посмотреть все результаты тестирования</a></p>
+    @endif
 @endsection

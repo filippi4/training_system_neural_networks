@@ -16,6 +16,7 @@ class CreateTestsTable extends Migration
         Schema::create('tests', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('question-type');
             $table->text('answers'); // ответы разделены символом ';', в конце ';' не ставится
             $table->timestamps();
         });
