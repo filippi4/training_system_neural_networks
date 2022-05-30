@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-5 col-md-offset-4">
+    <div class="col-md-6 col-md-offset-4">
         <h4>Панель управления пользователя</h4>
         <hr>
         <table class="table">

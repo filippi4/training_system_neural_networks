@@ -20,7 +20,7 @@
                     <td>{{ $data->name }}</td>
                     <td>{{ $data->email }}</td>
                     <td><a href="{{ route('edit-lessons') }}">Редактировать уроки</a></td>
-                    <td><a href="{{ route('edit-test') }}">Редактировать тест</a></td>
+                    <td><a href="{{ route('edit-test') }}">Редактировать тесты</a></td>
                     <td><a href="{{ route('user-test-results') }}">Результаты тестирования</a></td>
                 </tr>
             </tbody>

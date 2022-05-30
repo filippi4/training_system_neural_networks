@@ -11,21 +11,21 @@
     </div>
     <div class="form-group">
     <label for="question-type">Выберите тип вопроса</label>
-    <select class="form-control" name="question-type" id="question-type">
+    <select class="form-select" name="question-type" id="question-type" style="width: 11em">
             <option selected value="theor">Теоретический</option>
             <option value="math">Математический</option>
         </select>
     </div>
     <div class="form-group">
         <label for="answers-count">Выберите количество правильных ответов</label>
-        <select class="form-control" name="right-answers-count" id="right-answers-count" onchange="change_right_answers_count(value)">
+        <select class="form-select" name="right-answers-count" id="right-answers-count" onchange="change_right_answers_count(value)" style="width: 8em">
             <option value="one">один</option>
             <option value="several">несколько</option>
         </select>
     </div>
     <div class="form-group">
         <label for="answers-count">Выберите количество вариантов ответов</label>
-        <select class="form-control" name="answers-count" id="answers-count" onchange="change_answers_count(value)">
+        <select class="form-select" name="answers-count" id="answers-count" onchange="change_answers_count(value)" style="width: 4em">
             <option value="2">2</option>
             <option value="3">3</option>
             <option selected value="4">4</option>
