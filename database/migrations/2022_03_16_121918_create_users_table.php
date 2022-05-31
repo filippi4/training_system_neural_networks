@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->boolean('is_admin')->default(0);
             $table->string('password');
+            $table->string('delivered_lessons'); // список из id прочитанных лекций - 1,2,3,4
             $table->timestamps();
         });
     }

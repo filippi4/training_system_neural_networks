@@ -2,15 +2,16 @@
 /* Маршруты к страницам */
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\CustomAuthController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\GlossaryController;
 use App\Models\Lesson;
 
-Route::get('/', function () {
-    return view('home', ['data' => Lesson::all()]);
-})->name('home');
+Route::get('/',
+    [HomeController::class, 'showLessons']
+)->name('home');
 
 Route::get('/testing', function () {
     return view('testing');
@@ -48,6 +49,10 @@ Route::get('/lessons',
 Route::get('/lessons/{id}',
     [ LessonController::class, 'showLesson']
 )->name('one-lesson');
+
+Route::post('/lessons/{id}/delivered',
+    [ LessonController::class, 'deliveredLesson']
+)->name('delivered-lesson')->middleware('isLoggedIn');
 
 
 Route::get('/login', 
