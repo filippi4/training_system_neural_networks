@@ -17,7 +17,6 @@ class CreateLessonsTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
-            $table->string('content_type');
             $table->timestamps();
         });
     }

@@ -17,10 +17,6 @@ class LessonController extends Controller
     
     public function showLesson($id) {
         $lesson = Lesson::find($id);
-        if ($lesson->content_type == "markdown") {
-            $parsedown = new Parsedown();
-            $lesson->content = $parsedown->text($lesson->content);
-        }
         $data['lesson'] = $lesson;
         if (Session::has('loginId')) {
             $user = User::find(Session::get('loginId'));
@@ -54,8 +50,7 @@ class LessonController extends Controller
     public function addLesson(Request $req) {
         $lesson = new Lesson;
         $lesson->title = $req->input('lesson-title');
-        $lesson->content = $req->input('lesson-content');
-        $lesson->content_type = $req->input('content-type');     
+        $lesson->content = $req->input('lesson-content');  
         $lesson->save();
         return redirect()->route('edit-lessons');
     }
@@ -68,8 +63,7 @@ class LessonController extends Controller
     public function saveChangeLesson($id, Request $req) {
         $lesson = Lesson::find($id);
         $lesson->title = $req->input('lesson-title');
-        $lesson->content = $req->input('lesson-content');
-        $lesson->content_type = $req->input('content-type');     
+        $lesson->content = $req->input('lesson-content');  
         $lesson->save();
         return redirect()->route('edit-lessons');
     }
