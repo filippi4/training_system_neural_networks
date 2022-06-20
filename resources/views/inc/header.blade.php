@@ -1,11 +1,16 @@
-<header class="py-3 mb-4 border-bottom">
+<header class="py-2">
     <div class="container d-flex flex-wrap justify-content-center">
-      <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto text-dark text-decoration-none">
-        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-        <span class="fs-4">Обучение теории нейронных сетей</span>
-      </a>
-      <!-- <form class="col-12 col-lg-auto mb-3 mb-lg-0">
-        <input type="search" class="form-control" placeholder="Поиск..." aria-label="Search">
-      </form> -->
+        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 me-lg-auto text-dark text-decoration-none">
+            <span class="fs-4"><strong>Обучение теории нейронных сетей</strong></span>
+        </a>
+        <ul class="nav">
+        @if (!Session::has('loginId'))
+            <li class="nav-item"><a href="{{ route('login') }}" class="nav-link link-dark px-2">Вход</a></li>
+            <li class="nav-item"><a href="{{ route('registration') }}" class="nav-link link-dark px-2">Регистрация</a></li>
+        @else
+            <li class="nav-item"><a href="{{ route('dashboard') }}" class="nav-link link-dark px-2">{{ Session::get('userName') }}</a></li>
+            <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link link-dark px-2">Выйти</a></li>
+        @endif
+        </ul>
     </div>
-  </header>
+</header>

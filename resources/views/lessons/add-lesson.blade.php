@@ -13,6 +13,16 @@
             <label for="lesson-title">Введите название урока</label>
             <input type="text" name="lesson-title" placeholder="Название урока" id="lesson-title" class="form-control">
         </div>
+
+        <div class="form-group">
+            <span>Выберите теги:</span>
+            @foreach($tags as $tag)
+            <label for="tag-{{ $tag->id }}">
+                {{ $tag->name }}
+                <input type="checkbox" name="tags[{{ $tag->id }}]" id="tag-{{ $tag->id }}" class="checkbox-control">
+            </label>
+            @endforeach
+        </div>
         
         <div class="form-group">
             <label for="lesson-content-editor">Введите содержание урока</label>
@@ -32,13 +42,5 @@
             .catch( error => {
                 console.error( error );
             } );
-
-        // // Assuming there is a <button id="submit">Submit</button> in your application.
-        // document.querySelector( '#btn-submit' ).addEventListener( 'click', () => {
-        //     lesson_content_json = document.getElementById( 'lesson-content-json' ).value = JSON.stringify(editor);
-        //     alert(lesson_content_json);
-
-        //     // ...
-        // } );
     </script>
 @endsection

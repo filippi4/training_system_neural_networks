@@ -3,43 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Models\Lesson;
 use App\Models\User;
+use App\Models\Tag;
+
 use Parsedown;
 use Session;
 
 class LessonController extends Controller
 {
     public function allData() {
-        $data = Lesson::all(); 
-        return view('lessons', compact('data'));
+        return view('lessons', 
+                ['lessons' => Lesson::all()
+                    ->filter(function ($value, $key) { 
+                        // TODO: delete method first
+                        return $value->tags()->get()->first()->name == 'Урок'; 
+                    })]);
     }
     
     public function showLesson($id) {
-        $lesson = Lesson::find($id);
-        $data['lesson'] = $lesson;
-        if (Session::has('loginId')) {
-            $user = User::find(Session::get('loginId'));
-            $data['delivered'] = (in_array($id, explode(",", $user->delivered_lessons))) ? true : false;
-        }
-
-        return view('one-lesson', compact('data'));
-    }
-
-    public function deliveredLesson($id, Request $req) {
-        /**
-         * BAG: с помощью браузера можно вернуться на предыдущую страницу
-         * и еще раз добавить id прочитанной страницы к списку
-         */
-        $user = User::find(Session::get('loginId'));
-        if ($user->delivered_lessons == NULL) {
-            $user->delivered_lessons = $req->input('lesson-id');
-        } else {
-            $user->delivered_lessons .= "," . $req->input('lesson-id');
-        }
-        $user->save();
-
-        return redirect()->route('lessons');
+        return view('one-lesson', ['lesson' => Lesson::find($id)]);
     }
 
     public function editLessons() {
@@ -47,29 +31,52 @@ class LessonController extends Controller
         return view('lessons.edit-lessons', compact('data'));
     }
 
+    public function pageAddLesson() {
+        return view('lessons.add-lesson', ['tags' => Tag::all()]);
+    }
+
     public function addLesson(Request $req) {
-        $lesson = new Lesson;
-        $lesson->title = $req->input('lesson-title');
-        $lesson->content = $req->input('lesson-content');  
-        $lesson->save();
+        $lesson = Lesson::create(['title' => $req->input('lesson-title'),
+                                'content' => $req->input('lesson-content')]);   
+
+        $tags_id = [];
+        foreach ($req->input('tags') as $id => $checked) {
+           $tags_id[] = $id;
+        }
+        $tags = Tag::find($tags_id);
+        $lesson->tags()->attach($tags);
+
         return redirect()->route('edit-lessons');
     }
 
     public function changeLesson($id) {
-        $data = Lesson::find($id);
-        return view('lessons.change-lesson', compact('data'));
+        return view('lessons.change-lesson', 
+                ['lesson' => Lesson::find($id), 'tags' => Tag::all()]);
     }
 
     public function saveChangeLesson($id, Request $req) {
         $lesson = Lesson::find($id);
         $lesson->title = $req->input('lesson-title');
-        $lesson->content = $req->input('lesson-content');  
+        $lesson->content = $req->input('lesson-content');
+
+        if ($lesson->tags()->get()->count()) {
+            $lesson->tags()->detach();
+        }
+
+        if ($req->input('tags')) {
+            $lesson->tags()->attach(Tag::find(array_keys($req->input('tags'))));
+        }
+
         $lesson->save();
+
         return redirect()->route('edit-lessons');
     }
 
     public function removeLesson($id) {
-        Lesson::find($id)->delete();
+        $lesson = Lesson::find($id);
+        $lesson->tags()->detach();
+        $lesson->delete();
+
         return redirect()->route('edit-lessons');
     }
 }

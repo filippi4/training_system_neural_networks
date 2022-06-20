@@ -10,7 +10,7 @@ use App\Http\Controllers\GlossaryController;
 use App\Models\Lesson;
 
 Route::get('/',
-    [HomeController::class, 'showLessons']
+    [HomeController::class, 'pageHome']
 )->name('home');
 
 Route::get('/testing', function () {
@@ -50,10 +50,6 @@ Route::get('/lessons/{id}',
     [ LessonController::class, 'showLesson']
 )->name('one-lesson');
 
-Route::post('/lessons/{id}/delivered',
-    [ LessonController::class, 'deliveredLesson']
-)->name('delivered-lesson')->middleware('isLoggedIn');
-
 
 Route::get('/login', 
     [ CustomAuthController::class, 'login']
@@ -91,9 +87,9 @@ Route::get('/admin/edit-lessons',
     [ LessonController::class, 'editLessons']
 )->name('edit-lessons')->middleware('is_admin');
 
-Route::get('/admin/edit-lesson/add', function () {
-    return view('lessons.add-lesson');
-})->name('add-lesson')->middleware('is_admin');
+Route::get('/admin/edit-lesson/add', 
+    [ LessonController::class, 'pageAddLesson']
+)->name('add-lesson')->middleware('is_admin');
 
 Route::post('/admin/edit-test/add-lesson',
     [ LessonController::class, 'addLesson']
