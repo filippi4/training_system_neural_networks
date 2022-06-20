@@ -6,12 +6,33 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Test;
 use App\Models\TestResults;
+use App\Models\Question;
 use App\Models\User;
 use Session;
 
 class TestController extends Controller
 {
     public function showTest($question_type) {
+        $s = '';
+        foreach (Question::all() as $question) {
+            $s .= 'Вопрос: ' . $question->description . "\r\n";
+            foreach ($question->answers()->get() as $answer) {
+                if (in_array($answer->id, 
+                        $question->answers_right()->get()
+                                    ->map(function ($answer) { 
+                                        return $answer->id; 
+                                    })->all())) {
+                    $s .= '+)';
+                } else {
+                    $s .= '*)'; 
+                }
+                $s .= $answer->text . "\r\n";
+            }
+            $s .= "\r\n\r\n";
+        }
+        dd("output", $s);
+        /////////////////
+
         $test = Test::all();
         $data = [];
         foreach ($test as $question) {
