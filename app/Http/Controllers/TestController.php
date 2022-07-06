@@ -5,102 +5,69 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Test;
-use App\Models\TestResults;
+use App\Models\TestResult;
 use App\Models\Question;
+use App\Models\Answer;
 use App\Models\User;
 use Session;
 
 class TestController extends Controller
 {
-    public function showTest($question_type) {
-        $s = '';
-        foreach (Question::all() as $question) {
-            $s .= 'Вопрос: ' . $question->description . "\r\n";
-            foreach ($question->answers()->get() as $answer) {
-                if (in_array($answer->id, 
-                        $question->answers_right()->get()
-                                    ->map(function ($answer) { 
-                                        return $answer->id; 
-                                    })->all())) {
-                    $s .= '+)';
-                } else {
-                    $s .= '*)'; 
-                }
-                $s .= $answer->text . "\r\n";
-            }
-            $s .= "\r\n\r\n";
-        }
-        dd("output", $s);
-        /////////////////
-
-        $test = Test::all();
-        $data = [];
-        foreach ($test as $question) {
-            // записывает вопросы нужного типа
-            if ($question->question_type == $question_type) {
-                $data[$question->title] = explode(";", str_replace('@', '', $question->answers));
-            }
-        }
-        return view('tests.test', compact('data'))->with('question_type', $question_type);
+    public function pageTesting() {
+        return view('testing', ['tests' => Test::all()]);
     }
 
-    public function checkTest($question_type, Request $req) {
-        $test = Test::all();
-        $test_correspond_type = [];
-        foreach ($test as $question) {
-            if ($question->question_type == $question_type) {
-                $test_correspond_type[] = $question;
+    public function pageTest(Test $test) {
+        return view('tests.test', ['test' => $test]);
+    }
+
+    public function checkTest(Test $test, Request $req) {
+        if (count(array_unique(array_map(function ($item) { return explode('_', $item)[1]; }, array_map(function ($item) { return explode('-', $item)[0]; }, preg_grep('/^question_\d+-answer_\d+$/', array_keys($req->all()))))))
+            !== $test->questions()->get()->count()) {
+            return redirect()->back()->with('error', 'Ответьте на все вопросы');
+        }
+
+        $request_test = [];
+        $test_control = [];
+        foreach ($test->questions()->get() as $question) {
+            $test_control["question_{$question->id}"] =
+                array_merge((isset($test_control["question_{$question->id}"]))? $test_control["question_{$question->id}"] : [],
+                    $question->answers_right()->get()->map(function ($item) { return $item->id; })->all());
+            foreach($question->answers()->get() as $answer) {
+                if ($req->input("question_{$question->id}-answer_{$answer->id}") !== null) {
+                    $request_test["question_{$question->id}"] = 
+                        array_merge((isset($request_test["question_{$question->id}"])) ? $request_test["question_{$question->id}"] : [], [$answer->id]);
+                }
+
             }
         }
-        if ((count($req->all()) - 1) != count($test_correspond_type)) {
-            return redirect()->back()->with('error', "Ответьте на все вопросы.");
-        }
-        $result = [];
-        $number = 1;
-        foreach ($test_correspond_type as $question) {
-            $answers = explode(";", $question->answers);
-            $right_answer = [];
-            foreach ($answers as $answer) {
-               $right_answer[] = gettype(strpos($answer, "@")) === "integer";
+
+        $number = 0;
+        foreach ($test_control as $question => $answers_right) {
+            if ($test_control[$question] === $request_test[$question]) {
+                $number++;
             }
-            // TODO: переписать
-            $user_answer = array_fill(0, count($answers), false);
-            foreach ($req->input("question-$number") as $answer)
-                for ($i = 1; $i <= count($answers); $i++) {
-                    $user_answer[$i-1] |= $answer == (string)($i-1);
-                }
-            $result["$number"] = $right_answer == $user_answer;
-            $number++;
         }
-        if (Session::has('loginId')) {
-            $current_user = User::find(Session::get('loginId'));
-            $test_results = TestResults::where('email', '=', $current_user->email)->first();
-            if ($test_results == null) {
-                $t_results = new TestResults;
-                $t_results->email = $current_user->email;
-                $tmp_result = "";
-                $tmp_result .= date('Y-m-d H:i:s') . ' ' . $question_type . PHP_EOL;
-                foreach ($result as $key => $value) {
-                    $tmp_result .= $key . ':' . (($value) ? '1' : '0') . ' ';
-                }
-                $tmp_result[-1] = ';';
-                $t_results->results = $tmp_result;
-                $t_results->save();
-            } else {
-                $tmp_result = $test_results->results;
-                $tmp_result .= PHP_EOL;
-                $tmp_result .= date('Y-m-d H:i:s') . ' ' . $question_type . PHP_EOL;
-                foreach ($result as $key => $value) {
-                    $tmp_result .= $key . ':' . (($value) ? '1' : '0') . ' ';
-                }
-                $tmp_result[-1] = ';';
-                $test_results->results = $tmp_result;
-                $test_results->save();
-            }
-            
-        }
-        $data = $result;
-        return view('tests.test-results', compact('data'));
+
+        $scale = round($number / count($test_control), 2);
+        $score = '';
+        if ($scale == 1.0) $score = 'отлично';
+        if ($scale < 1.0 && $scale >= 0.75) $score = 'хорошо';
+        if ($scale < 0.75 && $scale >= 0.50) $score = 'удовлетворительно';
+        if ($scale < 0.50) $score = 'неудовлетворительно';
+
+        // echo $number . '/' . count($test_control) . ' ' . $score; die();
+
+        $test_result = new TestResult;
+        $test_result->test()->associate($test);
+        // $test_result->user()->associate(User::find(1));
+        $test_result->tries += 1;
+        $test_result->amount_right_questions = $number;
+        $test_result->score = $score;
+        $test_result->updated_at = date('Y-m-d H:s:i');
+        // $test_result->save();
+
+        return view('tests.test-result', ['test_result' => $test_result]);
     }
 
     public function showUserTestResults() {
@@ -137,25 +104,43 @@ class TestController extends Controller
         }
     }
 
-    public function editTest() {
-        $test = Test::all();
-        if ($test->isEmpty()) {
-            return view('tests.edit-test')->with('message', 'Тест не создан, воспользуйтесь базой данных для создания теста.');
-        }
-        else {
-            $data = [];
-            foreach ($test as $question) {
-                $data[$question->id] = [ 
-                    'title' => $question->title,
-                    'type' => $question->question_type,
-                    'answers' => explode(";", $question->answers)
-                ];
-            }
-            return view('tests.edit-test', compact('data'));
-        }
+    public function pageAddTest() {
+        return view('tests.add-test');
+    }
+
+    public function addTest(Request $req) {
+        Test::create(['name' => $req->input('name')]);
+        return redirect()->route('edit-tests');
+    }
+
+    public function pageEditTests() {
+        return view('tests.edit-tests', ['tests' => Test::all()]);
+    }
+
+    public function pageEditTest(Test $test) {
+        return view('tests.change-test', ['test' => $test]);
+    }
+
+    public function pageAddQuestion() {
+        return view('tests.add-question');
+    }
+
+    public function pageChangeQuestion(Question $question) {
+        return view('tests.change-question', ['question' => $question]);
+    }
+
+    public function deleteTest(Test $test) {
+        $test->delete();
+        return redirect()->back();
     }
 
     public function addQuestion(Request $req) {
+        // dd($req->all());
+        // $question = new Question(['description' => $req->input('question-description')]);
+        // for ($i = 0; $i < (int)$req->input('answers-count'); $i++) {
+        //     ;
+        //     // $answer = Answer;
+        // }
         // TODO: переписать с помошью validate
         $error = "Заполните все поля формы";
         $correct_input = true;
@@ -214,7 +199,7 @@ class TestController extends Controller
         foreach ($test as $question) {
             $data[$question->id] = $question->title;
         }
-        return view('tests.remove-question', compact('data'));
+        return view('tests.delete-question', compact('data'));
     }
 
     public function changeQuestion($id, Request $req) {
@@ -295,7 +280,7 @@ class TestController extends Controller
         }
     }
 
-    public function removeQuestion($id, Request $req) {
+    public function deleteQuestion($id, Request $req) {
         Test::find($id)->delete();
         return redirect()->route('edit-test');
     }

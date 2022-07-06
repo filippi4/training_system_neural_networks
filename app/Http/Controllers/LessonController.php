@@ -72,7 +72,7 @@ class LessonController extends Controller
         return redirect()->route('edit-lessons');
     }
 
-    public function removeLesson($id) {
+    public function deleteLesson($id) {
         $lesson = Lesson::find($id);
         $lesson->tags()->detach();
         $lesson->delete();

@@ -3,21 +3,23 @@
 @section('title-block')Тест@endsection
 
 @section('content')
-<form action="{{ route('check-test-form', $question_type) }}" method="post">
+<form action="{{ route('check-test-form', ['test' => $test->id]) }}" method="post">
     @csrf
-    @php $number = 1 @endphp
-    @foreach ($data as $title => $answers)
+    @foreach ($test->questions()->get() as $question_index => $question)
     <p>
-    <h3>{{ $number .'. '. $title }}</h3>
+        <h3>{{ $question_index+1 }}. {{ $question->description }}</h3>
         <div class="form-check">
-        @foreach ($answers as $index => $answer)
-        <label class="form-check-label" for="answer-{{ $number . '-' . ($index+1) }}">{{ $index+1 .') '. $answer }}</label>
-        <input class="form-check-input" type="checkbox" name="question-{{ $number }}[]" id="answer-{{ $number . '-' . ($index+1) }}" value="{{ $index }}">
-        <br>
+        @foreach ($question->answers()->get() as $answer_index => $answer)
+            <input class="form-check-input" type="checkbox" 
+                   name="question_{{ $question->id }}-answer_{{ $answer->id }}" 
+                   id="question_{{ $question->id }}-answer_{{ $answer->id }}">
+            <label class="form-check-label" for="question_{{ $question->id }}-answer_{{ $answer->id }}">
+                {{ $answer_index+1 }}) {{ $answer->text }}
+            </label>
+            <br>
         @endforeach
         </div>
     </p>
-    @php $number++ @endphp
     @endforeach
     <button class="btn btn-primary" type="submit">Проверить</button>
 </form>

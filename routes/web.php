@@ -13,20 +13,15 @@ Route::get('/',
     [HomeController::class, 'pageHome']
 )->name('home');
 
-Route::get('/testing', function () {
-    return view('testing');
-})->name('testing');
+Route::get('/testing',
+    [ TestController::class, 'pageTesting']
+)->name('testing');
 
-Route::get('/testing/test/{question_type}', 
-    [ TestController::class, 'showTest']
+Route::get('/testing/test/{test}', 
+    [ TestController::class, 'pageTest']
 )->name('test');
 
-/**
- * BAD: question_type передается от страницы к странице
- * TODO: переписать с отдельной таблицей вопросов
- * с типом вопроса, тест ссылается на вопрос по id 
- */ 
-Route::post('/testing/test/check/{question_type}',
+Route::post('/testing/test/{test}/check',
     [TestController::class, 'checkTest']
 )->name('check-test-form');
 
@@ -91,7 +86,7 @@ Route::get('/admin/edit-lesson/add',
     [ LessonController::class, 'pageAddLesson']
 )->name('add-lesson')->middleware('is_admin');
 
-Route::post('/admin/edit-test/add-lesson',
+Route::post('/admin/edit-lesson/add-lesson',
     [ LessonController::class, 'addLesson']
 )->name('add-lesson-form')->middleware('is_admin');
 
@@ -103,33 +98,49 @@ Route::post('/admin/edit-lessons/change/{id}/save',
     [ LessonController::class, 'saveChangeLesson']
 )->name('save-change-lesson-form')->middleware('is_admin');
 
-Route::get('/admin/edit-lessons/remove-lesson/{id}',
-    [ LessonController::class, 'removeLesson']
-)->name('remove-lesson-form')->middleware('is_admin');
+Route::get('/admin/edit-lessons/delete-lesson/{id}',
+    [ LessonController::class, 'deleteLesson']
+)->name('delete-lesson-form')->middleware('is_admin');
 
-Route::get('/admin/edit-test',
-    [ TestController::class, 'editTest']
-)->name('edit-test')->middleware('is_admin');
+Route::get('/admin/edit-tests',
+    [ TestController::class, 'pageEditTests']
+)->name('edit-tests')->middleware('is_admin');
 
-Route::get('/admin/edit-test/add', function () {
-    return view('tests.add-question');
-})->name('add-edit-test')->middleware('is_admin');
+Route::get('/admin/edit-tests/add',
+    [ TestController::class, 'pageAddTest']
+)->name('add-test')->middleware('is_admin');
 
-Route::post('/admin/edit-test/add-question',
+Route::post('/admin/edit-tests/add',
+    [ TestController::class, 'addTest']
+)->name('add-test-form')->middleware('is_admin');
+
+Route::get('/admin/edit-tests/delete/{test}',
+    [ TestController::class, 'deleteTest']
+)->name('delete-test-form')->middleware('is_admin');
+
+Route::get('/admin/edit-tests/change/{test}', 
+    [ TestController::class, 'pageEditTest']
+)->name('change-test')->middleware('is_admin');
+
+Route::get('/admin/edit-test/questions/add',
+    [ TestController::class, 'pageAddQuestion']
+)->name('add-question')->middleware('is_admin');
+
+Route::post('/admin/edit-test/questions/add',
     [ TestController::class, 'addQuestion']
-)->name('add-edit-test-form')->middleware('is_admin');
+)->name('add-question-form')->middleware('is_admin');
 
-Route::get('/admin/edit-test/change/{id}', 
-    [ TestController::class, 'changeQuestion']
+Route::get('/admin/edit-test/change/{question}', 
+    [ TestController::class, 'pageChangeQuestion']
 )->name('change-question')->middleware('is_admin');
 
 Route::post('/admin/edit-test/change/{id}/save', 
     [ TestController::class, 'saveChangeQuestion']
 )->name('save-change-question-form')->middleware('is_admin');
 
-Route::get('/admin/edit-test/remove-question/{id}',
-    [ TestController::class, 'removeQuestion']
-)->name('remove-edit-test-form')->middleware('is_admin');
+Route::get('/admin/edit-test/delete-question/{id}',
+    [ TestController::class, 'deleteQuestion']
+)->name('delete-edit-test-form')->middleware('is_admin');
 
 Route::post('/admin/change-test-form',
     [ TestController::class, 'changeTest']

@@ -3,25 +3,11 @@
 @section('title-block')Добавление вопроса@endsection
 
 @section('content')
-<form action="{{ route('add-edit-test-form') }}" method="post">
+<form action="{{ route('add-question-form') }}" method="post">
     @csrf
     <div class="form-group">
         <label for="question-description">Введите текст вопроса</label>
         <textarea class="form-control" name="question-description" id="question-description" cols="40" rows="1"></textarea>
-    </div>
-    <div class="form-group">
-    <label for="question-type">Выберите тип вопроса</label>
-    <select class="form-control" name="question-type" id="question-type">
-            <option selected value="theor">Теоретический</option>
-            <option value="math">Математический</option>
-        </select>
-    </div>
-    <div class="form-group">
-    <label for="answers-count">Выберите количество правильных ответов</label>
-    <select class="form-control" name="right-answers-count" id="right-answers-count" onchange="change_true_answers_count(value)">
-            <option selected value="one">один</option>
-            <option value="several">несколько</option>
-        </select>
     </div>
     <div class="form-group">
         <label for="answers-count">Выберите количество вариантов ответов</label>
@@ -34,43 +20,37 @@
         </select>
     </div>
     <div class="form-group">
-        <label>Введите варианты ответов
+        <label>Введите варианты ответов и выберите правильный(ые)
             <table>
                 <tr id="tr-answer-1">
                     <td>1) </td>
                     <td><input type="text" class="form-control" name="answer-1" id="answer-1" style="width: 400px"></td>
-                    <td><input type="radio" name="radio-right-answer" id="radio-answer-1" value="1"></td>
-                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-1" value="1" style="display: none"></td>
+                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-1" value="1"></td>
                 </tr>
                 <tr id="tr-answer-2">
                     <td>2) </td>
                     <td><input type="text" class="form-control" name="answer-2" id="answer-2" style="width: 400px"></td>
-                    <td><input type="radio" name="radio-right-answer" id="radio-answer-2" value="2"></td>
-                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-2" value="2" style="display: none"></td>
+                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-2" value="2"></td>
                 </tr>
                 <tr id="tr-answer-3">
                     <td>3) </td>
                     <td style="margin-left: 20px"><input type="text" class="form-control" name="answer-3" id="answer-3" style="width: 400px"></td>
-                    <td><input type="radio" name="radio-right-answer" id="radio-answer-3" value="3"></td>
-                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-3" value="3" style="display: none"></td>
+                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-3" value="3"></td>
                 </tr>
                 <tr id="tr-answer-4">
                     <td>4) </td>
                     <td><input type="text" class="form-control" name="answer-4" id="answer-4" style="width: 400px"></td>
-                    <td><input type="radio" name="radio-right-answer" id="radio-answer-4" value="4"></td>
-                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-4" value="4" style="display: none"></td>
+                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-4" value="4"></td>
                 </tr>
                 <tr id="tr-answer-5" style="display: none">
                     <td>5) </td>
                     <td><input type="text" class="form-control" name="answer-5" id="answer-5" style="width: 400px"></td>
-                    <td><input type="radio" name="radio-right-answer" id="radio-answer-5" value="5"></td>
-                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-5" value="5" style="display: none"></td>
+                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-5" value="5"></td>
                 </tr>
                 <tr id="tr-answer-6" style="display: none">
                     <td>6) </td>
                     <td><input type="text" class="form-control" name="answer-6" id="answer-6" style="width: 400px"></td>
-                    <td><input type="radio" name="radio-right-answer" id="radio-answer-6" value="6"></td>
-                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-6" value="6" style="display: none"></td>
+                    <td><input type="checkbox" name="checkbox-right-answer[]" id="checkbox-answer-6" value="6"></td>
                 </tr>
             </table>
         </label>

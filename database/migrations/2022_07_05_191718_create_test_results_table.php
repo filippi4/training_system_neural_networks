@@ -15,16 +15,14 @@ class CreateTestResultsTable extends Migration
     {
         Schema::create('test_results', function (Blueprint $table) {
             $table->id();
-            $table->string('email');
-            /**
-             * Хранение результатов в бд
-             * 2022-05-10 14:00 teor
-             * 1:1 2:1 3:1 4:1 5:0;
-             * 2022-05-10 15:00 math
-             * 1:1 2:0 3:0 4:0 5:0;
-             */
-            $table->text('results'); 
+            $table->unsignedBigInteger('test_id')->nullable()->unsigned();
+            $table->unsignedBigInteger('user_id')->nullable()->unsigned();
+            $table->unsignedInteger('tries')->default(0)->unsigned();
+            $table->enum('score', ['неудовлетворительно', 'удовлетворительно', 'хорошо', 'отлично']);
             $table->timestamps();
+
+            $table->foreign('test_id')->references('id')->on('tests')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->nullable();
         });
     }
 
